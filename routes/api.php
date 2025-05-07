@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PeopleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,4 +12,7 @@ Route::prefix('v1')
                 'message' => 'Hello, World!',
             ]);
         });
+
+        Route::resource('people', PeopleController::class)
+            ->only(['index', 'show']);
     });
