@@ -63,11 +63,25 @@ class PeopleController extends Controller
 
     public function show(int $id)
     {
+        //Now we need to fetch all the movies that this person has appeared in
+        $allMovies = collect(Http::withoutVerifying() // just because im too lazy to set up a certificate
+            ->get("https://swapi.tech/api/films")
+            ->json("result"));
+        $currentCharacterMovies = $allMovies->filter(function ($movie) use ($id) {
+            return collect($movie['properties']['characters'])->contains("https://www.swapi.tech/api/people/{$id}");
+        })->map(function ($movie) {
+            return [
+                'title' => $movie['properties']['title'],
+                'id' => $movie['uid'],
+            ];
+        });
+
         $response = Http::withoutVerifying() // just because im too lazy to set up a certificate
             ->get("https://swapi.tech/api/people/{$id}")
             ->json();
 
         $data = $response['result']['properties'];
+
 
         return response()->json(
             [
@@ -79,6 +93,7 @@ class PeopleController extends Controller
                     'height' => $data['height'],
                     'mass' => $data['mass'],
                     "name" => $data['name'],
+                    "movies" => $currentCharacterMovies->toArray(),
                 ]
             ]
         );

@@ -16,7 +16,7 @@ const PERSON_1 = [
 ];
 
 
-test('It returns a person by id', function () {
+test('It returns a person by id and its movies', function () {
     $response = $this->get('/api/v1/people/1');
 
     $response->assertStatus(200)
@@ -29,13 +29,25 @@ test('It returns a person by id', function () {
                     'hair_color',
                     'height',
                     'mass',
-                    'name'
+                    'name',
+                    'movies' => [
+                        '*' => [
+                            'title',
+                            'id',
+                        ]
+                    ]
                 ]
             ]
         );
     $response->assertJsonFragment(
         [
             "name" => "Luke Skywalker",
+        ]
+    );
+
+    $response->assertJsonFragment(
+        [
+            "title" => "A New Hope",
         ]
     );
 });

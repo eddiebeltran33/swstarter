@@ -20,8 +20,6 @@ class MovieController extends Controller
             ])
             ->json();
 
-
-
         return response()->json(
             [
                 "data" => collect($response['result'])
