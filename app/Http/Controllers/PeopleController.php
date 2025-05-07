@@ -45,18 +45,14 @@ class PeopleController extends Controller
         if (is_null($url)) {
             return null;
         }
-        // Parse the URL to get query parameters
         $parsedUrl = parse_url($url);
 
-        // If there are no query parameters, return null
         if (!isset($parsedUrl['query'])) {
             return null;
         }
 
-        // Parse the query string into an array
         parse_str($parsedUrl['query'], $queryParams);
 
-        // Check if page parameter exists and return it
         if (isset($queryParams['page'])) {
             return $queryParams['page'];
         }
@@ -65,21 +61,24 @@ class PeopleController extends Controller
     }
 
 
-    public function show($id)
+    public function show(int $id)
     {
         $response = Http::withoutVerifying() // just because im too lazy to set up a certificate
-            ->get("https://swapi.dev/api/people/{$id}")
+            ->get("https://swapi.tech/api/people/{$id}")
             ->json();
+
+        $data = $response['result']['properties'];
 
         return response()->json(
             [
                 "data" => [
-                    'birth_year' => $response['birth_year'],
-                    'gender' => $response['gender'],
-                    'eye_color' => $response['eye_color'],
-                    'hair_color' => $response['hair_color'],
-                    'height' => $response['height'],
-                    'mass' => $response['mass'],
+                    'birth_year' => $data['birth_year'],
+                    'gender' => $data['gender'],
+                    'eye_color' => $data['eye_color'],
+                    'hair_color' => $data['hair_color'],
+                    'height' => $data['height'],
+                    'mass' => $data['mass'],
+                    "name" => $data['name'],
                 ]
             ]
         );

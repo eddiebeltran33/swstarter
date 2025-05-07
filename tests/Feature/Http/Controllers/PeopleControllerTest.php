@@ -29,9 +29,15 @@ test('It returns a person by id', function () {
                     'hair_color',
                     'height',
                     'mass',
+                    'name'
                 ]
             ]
         );
+    $response->assertJsonFragment(
+        [
+            "name" => "Luke Skywalker",
+        ]
+    );
 });
 
 
