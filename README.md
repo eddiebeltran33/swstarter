@@ -23,3 +23,9 @@
 - [ ] Create a scheduled task to aggreate the metrics every N minutes
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
+
+## Code Quality and Testing
+
+- [ ] Setup ESLint
+- [ ] Setup Laravel Pint
+- [ ] Setup Github Actions to run tests and linting
