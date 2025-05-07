@@ -6,17 +6,32 @@ import { ref } from 'vue';
 // Reactive state for the search form
 const searchType = ref('people'); // 'people' or 'movies', 'people' is default
 const searchQuery = ref('');
-
-// Placeholder for search function (not implemented as per request)
-// const performSearch = () => {
-//     console.log(`Searching for ${searchType.value}: ${searchQuery.value}`);
-// };
-
 const searchResults = ref([]); // Placeholder for search results
-const performSearch = () => {
-    // This function would typically make an API call to fetch search results
-    // For now, we will just log the search type and query
-    console.log(`Searching for ${searchType.value}: ${searchQuery.value}`);
+const isLoading = ref(false); // Add loading state
+
+const performSearch = async () => {
+    // if (!searchQuery.value) return; // Don't search if query is empty
+
+    isLoading.value = true; // Set loading state while fetching
+
+    const endpoint =
+        searchType.value === 'people' ? '/api/v1/people' : '/api/v1/movies';
+
+    try {
+        const response = await fetch(`${endpoint}?search=${searchQuery.value}`);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        searchResults.value = data.data; // Update reactive state with results
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        searchResults.value = []; // Reset results on error
+    } finally {
+        isLoading.value = false; // Reset loading state
+    }
 };
 </script>
 
@@ -78,6 +93,7 @@ const performSearch = () => {
                                 v-model="searchQuery"
                                 placeholder="e.g. Chewbacca, Yoda, Boba Fett"
                                 class="w-full rounded-lg border border-gray-300 p-3 placeholder-gray-400 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                @keydown.enter="performSearch"
                             />
                         </div>
 
@@ -85,8 +101,10 @@ const performSearch = () => {
                         <button
                             type="button"
                             class="w-full rounded-full bg-gray-200 px-4 py-3 font-semibold text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            @click="performSearch"
+                            :disabled="isLoading"
                         >
-                            SEARCH
+                            {{ isLoading ? 'SEARCHING...' : 'SEARCH' }}
                         </button>
                     </div>
 
@@ -99,7 +117,17 @@ const performSearch = () => {
                         </h2>
                         <hr class="mb-6 border-t border-gray-300" />
 
+                        <!-- Loading indicator -->
                         <div
+                            v-if="isLoading"
+                            class="py-10 text-center text-gray-500"
+                        >
+                            <p class="text-base">Loading results...</p>
+                        </div>
+
+                        <!-- Empty state message -->
+                        <div
+                            v-else-if="searchResults.length === 0"
                             class="space-y-1 py-10 text-center text-gray-500 md:py-16"
                         >
                             <p class="text-base">There are zero matches.</p>
@@ -108,7 +136,67 @@ const performSearch = () => {
                             </p>
                         </div>
 
-                        <!-- Actual results would be displayed here -->
+                        <!-- Results list -->
+                        <div v-else class="space-y-4">
+                            <!-- People results -->
+                            <div
+                                v-if="searchType === 'people'"
+                                class="space-y-4"
+                            >
+                                <div
+                                    v-for="person in searchResults"
+                                    :key="person.id"
+                                    class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+                                >
+                                    <h3
+                                        class="text-lg font-medium text-gray-800"
+                                    >
+                                        {{ person.name }}
+                                    </h3>
+                                    <div class="mt-2 text-sm text-gray-600">
+                                        <p v-if="person.birth_year">
+                                            Birth Year: {{ person.birth_year }}
+                                        </p>
+                                        <p v-if="person.gender">
+                                            Gender: {{ person.gender }}
+                                        </p>
+                                        <p v-if="person.height">
+                                            Height: {{ person.height }} cm
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Movie results -->
+                            <div
+                                v-if="searchType === 'movies'"
+                                class="space-y-4"
+                            >
+                                <div
+                                    v-for="movie in searchResults"
+                                    :key="movie.id"
+                                    class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+                                >
+                                    <h3
+                                        class="text-lg font-medium text-gray-800"
+                                    >
+                                        {{ movie.title }}
+                                    </h3>
+                                    <div class="mt-2 text-sm text-gray-600">
+                                        <p v-if="movie.release_date">
+                                            Release Date:
+                                            {{ movie.release_date }}
+                                        </p>
+                                        <p v-if="movie.director">
+                                            Director: {{ movie.director }}
+                                        </p>
+                                        <p v-if="movie.producer">
+                                            Producer: {{ movie.producer }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

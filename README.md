@@ -7,7 +7,7 @@
 - [x] /api/v1/movies (for searching)
 - [x] /api/v1/movies/{id}
 
-## Analitics
+## Analytics
 
 - [ ] Log individual request (metrics: time, status code, endpoint)
 - [ ] Top five people queried by 5 minute interval
@@ -29,3 +29,11 @@
 - [ ] Setup ESLint
 - [ ] Setup Laravel Pint
 - [ ] Setup Github Actions to run tests and linting
+
+## UI
+
+- [ ] Pagination for people
+- [ ] Detail page for people
+- [ ] Detail page for movies
+- [ ] Clean the search results on search type change
+- [x] Filter by name or tile either movies or people in the Index
