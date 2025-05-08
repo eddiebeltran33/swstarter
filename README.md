@@ -3,17 +3,17 @@
 ## Requirements
 
 - Docker and Docker compose installed (tested on Docker Desktop for Mac version v4.40.0)
+- Ports 3306, 80 and 6379 open and not used by other services
 
 ## Installation
 
 1. Clone the repository
     ```bash
-    git clone ...
-    cd swstarter
+    git clone https://github.com/eddiebeltran33/swstarter.git
     ```
-2. Install dependencies
+2. Install dependencies (not working yet)
     ```bash
-    make install
+    ./setup.sh
     ```
 
 ## Endpoints
