@@ -17,6 +17,7 @@ class PeopleController extends Controller
             ->get('https://swapi.tech/api/people', [
                 'name' => $request->query('search'),
                 'page' => $request->query('page'),
+                'limit' => 10,
             ])
             ->json();
 

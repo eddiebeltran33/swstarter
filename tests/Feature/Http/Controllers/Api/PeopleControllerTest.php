@@ -73,6 +73,38 @@ test(
                 'name' => 'Luke Skywalker',
             ]
         );
+        $response->assertJson(
+            [
+                'current_page' => 1,
+            ]
+        );
+    }
+);
+
+test(
+    'it returns the second page of people when query param is passed',
+    function () {
+        $response = $this->get('/api/v1/people?page=2');
+        $response->assertStatus(200)
+            ->assertJsonStructure(
+                [
+                    "data" => [
+                        '*' => [
+                            'name',
+                        ]
+                    ]
+                ]
+            );
+        $response->assertJsonFragment(
+            [
+                'name' => 'Anakin Skywalker',
+            ]
+        );
+        $response->assertJson(
+            [
+                'current_page' => 2,
+            ]
+        );
     }
 );
 

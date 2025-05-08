@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3'; // Import Link component
+import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 
 // Reactive state for the search form
@@ -8,19 +8,38 @@ const searchType = ref('people'); // 'people' or 'movies', 'people' is default
 const searchQuery = ref('');
 const searchResults = ref([]); // Placeholder for search results
 const isLoading = ref(false); // Add loading state
+
+// Pagination state for People
+const peopleCurrentPage = ref(1);
+const peopleNextPage = ref(null); // Will store the next page number, or null
+const isLoadingMore = ref(false); // Loading state for the "Next" button
+
 const placeholder = computed(() => {
     return searchType.value === 'people'
         ? 'e.g. Chewbacca, Yoda, Boba Fett'
         : 'e.g. A New Hope, The Empire Strikes Back, Return of the Jedi';
 });
-const performSearch = async () => {
-    isLoading.value = true; // Set loading state while fetching
 
-    const endpoint =
-        searchType.value === 'people' ? '/api/v1/people' : '/api/v1/movies';
+const performSearch = async () => {
+    isLoading.value = true;
+    searchResults.value = []; // Clear previous results for any new search
+
+    let endpoint = '';
+    let queryParams = `search=${searchQuery.value}`;
+
+    if (searchType.value === 'people') {
+        peopleCurrentPage.value = 1; // Reset to page 1 for a new people search
+        peopleNextPage.value = null; // Reset next page indicator
+        endpoint = '/api/v1/people';
+        queryParams += `&page=${peopleCurrentPage.value}`;
+    } else {
+        endpoint = '/api/v1/movies';
+        // Movies are not paginated in the UI per requirement,
+        // but the API might support it. We only send page 1 implicitly or no page.
+    }
 
     try {
-        const response = await fetch(`${endpoint}?search=${searchQuery.value}`);
+        const response = await fetch(`${endpoint}?${queryParams}`);
 
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -28,19 +47,65 @@ const performSearch = async () => {
 
         const data = await response.json();
         searchResults.value = data.data; // Update reactive state with results
+
+        if (searchType.value === 'people') {
+            peopleCurrentPage.value = parseInt(data.current_page, 10);
+            peopleNextPage.value = data.next_page
+                ? parseInt(data.next_page, 10)
+                : null;
+        }
     } catch (error) {
         console.error('Error fetching search results:', error);
         searchResults.value = []; // Reset results on error
+        if (searchType.value === 'people') {
+            peopleNextPage.value = null; // Ensure no "Next" button on error
+        }
     } finally {
-        isLoading.value = false; // Reset loading state
+        isLoading.value = false;
     }
 };
+
+const loadMorePeople = async () => {
+    if (!peopleNextPage.value || isLoadingMore.value) return;
+
+    isLoadingMore.value = true;
+    try {
+        const response = await fetch(
+            `/api/v1/people?search=${searchQuery.value}&page=${peopleNextPage.value}`,
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                'Network response was not ok when loading more people',
+            );
+        }
+
+        const data = await response.json();
+        searchResults.value.push(...data.data); // Append new results
+        peopleCurrentPage.value = parseInt(data.current_page, 10);
+        peopleNextPage.value = data.next_page
+            ? parseInt(data.next_page, 10)
+            : null;
+    } catch (error) {
+        console.error('Error fetching more people results:', error);
+        // Optionally, provide user feedback here
+    } finally {
+        isLoadingMore.value = false;
+    }
+};
+
 watch(
     searchType,
     () => {
-        searchResults.value = []; // Clear results if query is empty
+        searchResults.value = []; // Clear results when search type changes
+        // searchQuery.value = ''; // Optional: uncomment to clear search query on type change
+
+        // Reset pagination state for people if switching type
+        peopleCurrentPage.value = 1;
+        peopleNextPage.value = null;
+        isLoadingMore.value = false; // Reset loading more state
     },
-    { immediate: true },
+    { immediate: true }, // immediate:true clears results on initial load, which is fine for a search page
 );
 </script>
 
@@ -109,7 +174,7 @@ watch(
                         <!-- Search Button -->
                         <button
                             type="button"
-                            class="w-full rounded-full bg-emerald-500 px-4 py-3 font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            class="w-full rounded-full bg-emerald-500 px-4 py-3 font-semibold text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                             @click="performSearch"
                             :disabled="isLoading"
                         >
@@ -136,7 +201,7 @@ watch(
 
                         <!-- Empty state message -->
                         <div
-                            v-else-if="searchResults.length === 0"
+                            v-else-if="!isLoading && searchResults.length === 0"
                             class="space-y-1 py-10 text-center text-gray-500 md:py-16"
                         >
                             <p class="text-base">There are zero matches.</p>
@@ -146,41 +211,65 @@ watch(
                         </div>
 
                         <!-- Results list -->
-                        <div v-else class="space-y-4">
+                        <div v-else>
                             <!-- People results -->
-                            <div
-                                v-if="searchType === 'people'"
-                                class="space-y-4"
-                            >
+                            <div v-if="searchType === 'people'">
                                 <div
                                     v-for="person in searchResults"
                                     :key="person.id"
-                                    class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+                                    class="flex items-center justify-between border-b border-gray-200 py-4"
                                 >
-                                    <Link
-                                        :href="`/people/${person.id}`"
-                                        class="text-lg font-medium text-blue-600 hover:underline"
+                                    <span
+                                        class="text-base font-bold text-gray-800"
                                     >
                                         {{ person.name }}
+                                    </span>
+                                    <Link
+                                        :href="`/people/${person.id}`"
+                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                    >
+                                        See Details
                                     </Link>
+                                </div>
+                                <!-- "Next" Button for People Pagination -->
+                                <div
+                                    v-if="
+                                        peopleNextPage &&
+                                        searchResults.length > 0
+                                    "
+                                    class="mt-6 text-center"
+                                >
+                                    <button
+                                        @click="loadMorePeople"
+                                        :disabled="isLoadingMore"
+                                        class="rounded-full bg-emerald-500 px-8 py-3 font-semibold text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {{
+                                            isLoadingMore
+                                                ? 'LOADING...'
+                                                : 'MORE'
+                                        }}
+                                    </button>
                                 </div>
                             </div>
 
                             <!-- Movie results -->
-                            <div
-                                v-if="searchType === 'movies'"
-                                class="space-y-4"
-                            >
+                            <div v-if="searchType === 'movies'">
                                 <div
                                     v-for="movie in searchResults"
                                     :key="movie.id"
-                                    class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+                                    class="flex items-center justify-between border-b border-gray-200 py-4"
                                 >
-                                    <Link
-                                        :href="`/movies/${movie.id}`"
-                                        class="text-lg font-medium text-blue-600 hover:underline"
+                                    <span
+                                        class="text-base font-bold text-gray-800"
                                     >
                                         {{ movie.title }}
+                                    </span>
+                                    <Link
+                                        :href="`/movies/${movie.id}`"
+                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                    >
+                                        See Details
                                     </Link>
                                 </div>
                             </div>

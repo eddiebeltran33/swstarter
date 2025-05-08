@@ -46,6 +46,8 @@
 - [ ] Setup ESLint
 - [ ] Setup Laravel Pint
 - [ ] Setup Github Actions to run tests and linting
+- [ ] Setup PHPStan
+- [ ] Setup PHPMD
 
 ## UI
 
@@ -56,3 +58,4 @@
 - [x] Filter by name or tile either movies or people in the Index
 - [ ] Create a button component
 - [ ] Override tailwind colors and typography with Swstarter colors
+- [ ] Migrate to Typescript
