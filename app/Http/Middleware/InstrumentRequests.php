@@ -3,13 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Jobs\ProcessQueryStat;
-use App\Models\QueryStat;
 use Closure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Process;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Arr;
 
 class InstrumentRequests
 {
@@ -32,7 +30,13 @@ class InstrumentRequests
      */
     public function terminate(Request $request, Response $response): void
     {
-        $originalStartTime = $request->server('REQUEST_TIME_FLOAT');
+        $route = $request->route();
+
+        $parameters = $route->parameters();
+
+        $resourceIdValue = Arr::first($parameters, default: null);
+
+        $originalStartTime = $request->server('REQUEST_TIME_FLOAT', microtime(true));
         $originalEndTime = microtime(true);
 
         // Convert timestamps to microsecond precision datetime strings
@@ -40,16 +44,16 @@ class InstrumentRequests
         $endDatetime = Carbon::createFromTimestampMs($originalEndTime * 1000);
 
         $event = [
-            'action' => $this->getValueOrNull($request->route() ? $request->route()->getActionName() : null),
+            'action' => $this->getValueOrNull($route->getActionName()),
             'outcome' => $response->isSuccessful() ? 'success' : 'failure',
             'started_at' => $startDatetime->format('Y-m-d H:i:s.u'),
             'ended_at' => $endDatetime->format('Y-m-d H:i:s.u'),
-            'duration' => ($originalEndTime - $originalStartTime) * 1000,
+            'duration' => ($originalEndTime - $originalStartTime) * 1000, // in milliseconds
             'http_request_method' => $this->getValueOrNull($request->method()),
             'client_ip' => $this->getValueOrNull($request->ip()),
             'url' => $this->getValueOrNull($request->getUri()),
-            'search_term' => $this->getValueOrNull($request->input('search')),
-            'resource_id' => $this->getValueOrNull($request->route('id')),
+            'search_term' => $this->getValueOrNull($request->input('search')), // This remains, might be null for show routes
+            'resource_id' => $this->getValueOrNull($resourceIdValue), // Use the dynamically determined resource ID
         ];
 
         ProcessQueryStat::dispatch($event);
@@ -63,6 +67,7 @@ class InstrumentRequests
      */
     public function getValueOrNull($value)
     {
-        return $value ?: null;
+        // Ensure empty strings, 0, false are not converted to null unless they actually are null
+        return $value === '' || $value === 0 || $value === false ? $value : ($value ?: null);
     }
 }

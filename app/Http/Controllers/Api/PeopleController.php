@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\SWAAPIClient;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Services\SWAAPI\Data\PersonSummaryDTO; // For type hinting $personSummaryDto
-use App\Services\SWAAPI\Data\MovieSummaryDTO; // For type hinting $movieSummary
-// use Illuminate\Support\Collection; // Not strictly needed
+use App\Services\SWAAPI\Data\PersonSummaryDTO;
 
 class PeopleController extends Controller
 {

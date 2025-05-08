@@ -42,22 +42,13 @@ class MovieController extends Controller
 
     public function show(int $id): JsonResponse
     {
+        // $route = request()->route();
+        // dd($route->parameters());
         $movieDto = $this->swapiClient->getMovieById($id);
 
         if (!$movieDto) {
             return response()->json(['message' => 'Film not found'], 404);
         }
-
-        // $charactersForMovie = [];
-
-        // $characterSummaries = $this->swapiClient->getPeopleByUrls($movieDto->characterUrls);
-        // foreach ($characterSummaries as $characterSummary) {
-        //     $charactersForMovie[] = [
-        //         'name' => $characterSummary->name,
-        //         'id' => $characterSummary->id,
-        //     ];
-        // }
-
 
         return response()->json([
             "data" => [
