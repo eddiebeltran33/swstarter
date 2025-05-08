@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\PeopleController;
+use App\Http\Middleware\InstrumentRequests;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')
+    ->middleware(InstrumentRequests::class)
 
     ->group(function () {
 

@@ -25,7 +25,7 @@
 
 ## Analytics
 
-- [ ] Log individual request (metrics: time, status code, endpoint)
+- [x] Log individual request (metrics: time, status code, endpoint)
 - [ ] Top five people queried by 5 minute interval
 - [ ] Top five people searches by 5 minute interval
 - [ ] Top five movies queried by 5 minute interval
@@ -50,6 +50,7 @@
 - [ ] Setup PHPMD
 - [ ] Test 404 cases and invalid data
 - [ ] Install husky and prevent commit if there are linting errors
+- [ ] Inertia endpoint tests (Laravel dusk)
 
 ## UI
 

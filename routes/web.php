@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Middleware\InstrumentRequests;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,10 +17,14 @@ Route::get('/dashboard', function () {
 
 
 Route::resource('people', PeopleController::class)
+    ->middleware(InstrumentRequests::class)
     ->only(['show'])
     ->name('show', 'people.show');
 
-Route::resource('movies', MovieController::class)->only('show')->name('show', 'movies.show');
+Route::resource('movies', MovieController::class)
+    ->middleware(InstrumentRequests::class)
+    ->only('show')
+    ->name('show', 'movies.show');
 
 
 require __DIR__ . '/auth.php';
