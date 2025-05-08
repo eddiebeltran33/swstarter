@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\MovieController;
-use App\Http\Controllers\PeopleController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\PeopleController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')

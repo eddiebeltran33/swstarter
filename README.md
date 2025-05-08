@@ -1,4 +1,20 @@
-# TO-DOS
+# SWStarter - A Star Wars API - Lawnstarter Take Home Test
+
+## Requirements
+
+- Docker and Docker compose installed (tested on Docker Desktop for Mac version v4.40.0) )
+
+## Installation
+
+1. Clone the repository
+    ```bash
+    git clone ...
+    cd swstarter
+    ```
+2. Install dependencies
+    ```bash
+    make install
+    ```
 
 ## Endpoints
 
@@ -23,6 +39,7 @@
 - [ ] Create a scheduled task to aggreate the metrics every N minutes
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
+- [ ] Create a SWAPI client to handle the requests to the SWAPI and swap it at test time to mock the responses
 
 ## Code Quality and Testing
 
@@ -33,7 +50,9 @@
 ## UI
 
 - [ ] Pagination for people
-- [ ] Detail page for people
-- [ ] Detail page for movies
+- [x] Detail page for people
+- [x] Detail page for movies
 - [ ] Clean the search results on search type change
 - [x] Filter by name or tile either movies or people in the Index
+- [ ] Create a button component
+- [ ] Override tailwind colors and typography with Swstarter colors

@@ -1,17 +1,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link } from '@inertiajs/vue3'; // Import Link component
+import { ref, computed, watch } from 'vue';
 
 // Reactive state for the search form
 const searchType = ref('people'); // 'people' or 'movies', 'people' is default
 const searchQuery = ref('');
 const searchResults = ref([]); // Placeholder for search results
 const isLoading = ref(false); // Add loading state
-
+const placeholder = computed(() => {
+    return searchType.value === 'people'
+        ? 'e.g. Chewbacca, Yoda, Boba Fett'
+        : 'e.g. A New Hope, The Empire Strikes Back, Return of the Jedi';
+});
 const performSearch = async () => {
-    // if (!searchQuery.value) return; // Don't search if query is empty
-
     isLoading.value = true; // Set loading state while fetching
 
     const endpoint =
@@ -33,6 +35,13 @@ const performSearch = async () => {
         isLoading.value = false; // Reset loading state
     }
 };
+watch(
+    searchType,
+    () => {
+        searchResults.value = []; // Clear results if query is empty
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
@@ -91,7 +100,7 @@ const performSearch = async () => {
                             <input
                                 type="text"
                                 v-model="searchQuery"
-                                placeholder="e.g. Chewbacca, Yoda, Boba Fett"
+                                :placeholder="placeholder"
                                 class="w-full rounded-lg border border-gray-300 p-3 placeholder-gray-400 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                                 @keydown.enter="performSearch"
                             />
@@ -100,7 +109,7 @@ const performSearch = async () => {
                         <!-- Search Button -->
                         <button
                             type="button"
-                            class="w-full rounded-full bg-gray-200 px-4 py-3 font-semibold text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            class="w-full rounded-full bg-emerald-500 px-4 py-3 font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                             @click="performSearch"
                             :disabled="isLoading"
                         >
@@ -148,22 +157,12 @@ const performSearch = async () => {
                                     :key="person.id"
                                     class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
                                 >
-                                    <h3
-                                        class="text-lg font-medium text-gray-800"
+                                    <Link
+                                        :href="`/people/${person.id}`"
+                                        class="text-lg font-medium text-blue-600 hover:underline"
                                     >
                                         {{ person.name }}
-                                    </h3>
-                                    <div class="mt-2 text-sm text-gray-600">
-                                        <p v-if="person.birth_year">
-                                            Birth Year: {{ person.birth_year }}
-                                        </p>
-                                        <p v-if="person.gender">
-                                            Gender: {{ person.gender }}
-                                        </p>
-                                        <p v-if="person.height">
-                                            Height: {{ person.height }} cm
-                                        </p>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
 
@@ -177,23 +176,12 @@ const performSearch = async () => {
                                     :key="movie.id"
                                     class="rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
                                 >
-                                    <h3
-                                        class="text-lg font-medium text-gray-800"
+                                    <Link
+                                        :href="`/movies/${movie.id}`"
+                                        class="text-lg font-medium text-blue-600 hover:underline"
                                     >
                                         {{ movie.title }}
-                                    </h3>
-                                    <div class="mt-2 text-sm text-gray-600">
-                                        <p v-if="movie.release_date">
-                                            Release Date:
-                                            {{ movie.release_date }}
-                                        </p>
-                                        <p v-if="movie.director">
-                                            Director: {{ movie.director }}
-                                        </p>
-                                        <p v-if="movie.producer">
-                                            Producer: {{ movie.producer }}
-                                        </p>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
