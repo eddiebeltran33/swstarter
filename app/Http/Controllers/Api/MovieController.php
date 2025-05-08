@@ -3,99 +3,71 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Client\Pool;
+use App\Services\SWAAPIClient;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\JsonResponse;
+use App\Services\SWAAPI\Data\MovieSummaryDTO;
 
 class MovieController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    private SWAAPIClient $swapiClient;
+
+    public function __construct(SWAAPIClient $swapiClient)
     {
-        $response = Http::withoutVerifying() // just because im too lazy to set up a certificate
-            ->get('https://swapi.tech/api/films', [
-                'title' => $request->query('search'),
-                'page' => $request->query('page'),
-            ])
-            ->json();
+        $this->swapiClient = $swapiClient;
+    }
+
+    public function index(Request $request): JsonResponse
+    {
+        $searchQuery = $request->query('search');
+
+        $movieSummaries = $this->swapiClient->getMovies($searchQuery);
+
+        $filmListData = array_map(function (MovieSummaryDTO $movieSummaryDto) {
+            return [
+                'title' => $movieSummaryDto->title,
+                'id' => $movieSummaryDto->id,
+            ];
+        }, $movieSummaries);
 
         return response()->json(
             [
-                "data" => collect($response['result'])
-                    ->map(function ($film) {
-                        return [
-                            'title' => $film['properties']["title"],
-                            'id' => $film['uid'],
-                        ];
-                    }),
-                "current_page" => $request->query('page', 1),
-                "next_page" => $this->getPageFromUrl(optional($response)['next']),
-                "per_page" => 10, // Assuming the API returns 10 results per page
-                "total" => count($response['result']),
+                "data" => $filmListData,
+                // SWAPI /films endpoint doesn't seem to provide total_records directly in the main response,
+                // so count of returned items is used.
+                "total" => count($filmListData),
             ]
         );
     }
 
-    private function getPageFromUrl(string | null $url): string | null
+    public function show(int $id): JsonResponse
     {
-        if (is_null($url)) {
-            return null;
-        }
-        // Parse the URL to get query parameters
-        $parsedUrl = parse_url($url);
+        $movieDto = $this->swapiClient->getMovieById($id);
 
-        // If there are no query parameters, return null
-        if (!isset($parsedUrl['query'])) {
-            return null;
+        if (!$movieDto) {
+            return response()->json(['message' => 'Film not found'], 404);
         }
 
-        // Parse the query string into an array
-        parse_str($parsedUrl['query'], $queryParams);
+        // $charactersForMovie = [];
 
-        // Check if page parameter exists and return it
-        if (isset($queryParams['page'])) {
-            return $queryParams['page'];
-        }
+        // $characterSummaries = $this->swapiClient->getPeopleByUrls($movieDto->characterUrls);
+        // foreach ($characterSummaries as $characterSummary) {
+        //     $charactersForMovie[] = [
+        //         'name' => $characterSummary->name,
+        //         'id' => $characterSummary->id,
+        //     ];
+        // }
 
-        return null;
-    }
-
-
-    public function show(int $id)
-    {
-
-        $response = Http::withoutVerifying()
-            ->get("https://swapi.tech/api/films/{$id}")
-            ->json();
-
-        $characterUrls = $response['result']['properties']["characters"];
-
-
-        $characterResponses = Http::pool(function (Pool $pool) use ($characterUrls) {
-            return array_map(
-                fn($url) => $pool->withoutVerifying()->get($url),
-                $characterUrls
-            );
-        });
-
-
-        $characters = [];
-        foreach ($characterResponses as $characterResponse) {
-            if ($characterResponse->successful()) {
-                $characterData = $characterResponse->json();
-                $characters[] = [
-                    'name' => $characterData['result']['properties']['name'],
-                    'id' => $characterData['result']['uid'],
-                ];
-            }
-        }
 
         return response()->json([
             "data" => [
-                "title" => $response['result']['properties']["title"],
-                "characters" => $characters
+                "id" => $movieDto->id,
+                "title" => $movieDto->title,
+                "opening_crawl" => $movieDto->openingCrawl,
+                "director" => $movieDto->director,
+                "producer" => $movieDto->producer,
+                "release_date" => $movieDto->releaseDate,
+                "characters" => $movieDto->characters,
             ]
         ]);
     }

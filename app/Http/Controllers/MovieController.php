@@ -2,27 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\SWAAPIClient;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
 
     /**
+     * The SWAPI client instance.
+     *
+     * @var \App\Services\SWAAPIClient
+     */
+    protected SWAAPIClient $swapiClient;
+
+    public function __construct(SWAAPIClient $swapiClient)
+    {
+        $this->swapiClient = $swapiClient;
+    }
+
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
+        // Fetch the movie details from the SWAPI client
+        $response = $this->swapiClient->getMovieById($id);
+
+
         return inertia('Movies/Show', [
             'movie' => [
-                'title' => 'A New Hope',
-                'opening_crawl' => 'It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.',
+                'title' => $response->title,
+                'opening_crawl' => $response->openingCrawl,
             ],
-            "characters" => [
-                [
-                    'name' => 'Luke Skywalker',
-                    "id" => 1,
-                ]
-            ],
+            "characters" => $response->characters,
         ]);
     }
 }

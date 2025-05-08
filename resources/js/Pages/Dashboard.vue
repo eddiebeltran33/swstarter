@@ -50,8 +50,8 @@ const performSearch = async () => {
 
         if (searchType.value === 'people') {
             peopleCurrentPage.value = parseInt(data.current_page, 10);
-            peopleNextPage.value = data.next_page
-                ? parseInt(data.next_page, 10)
+            peopleNextPage.value = data.next_page_number
+                ? parseInt(data.next_page_number, 10)
                 : null;
         }
     } catch (error) {
@@ -83,8 +83,8 @@ const loadMorePeople = async () => {
         const data = await response.json();
         searchResults.value.push(...data.data); // Append new results
         peopleCurrentPage.value = parseInt(data.current_page, 10);
-        peopleNextPage.value = data.next_page
-            ? parseInt(data.next_page, 10)
+        peopleNextPage.value = data.next_page_number
+            ? parseInt(data.next_page_number, 10)
             : null;
     } catch (error) {
         console.error('Error fetching more people results:', error);

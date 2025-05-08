@@ -83,7 +83,7 @@ defineProps({
                     <div class="mt-10">
                         <Link
                             :href="route('dashboard')"
-                            class="inline-flex items-center justify-center rounded-full bg-emerald-500 px-8 py-3 font-bold text-white  hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center rounded-full bg-emerald-500 px-8 py-3 font-bold text-white hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                         >
                             BACK TO SEARCH
                         </Link>

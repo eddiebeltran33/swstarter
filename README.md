@@ -39,23 +39,29 @@
 - [ ] Create a scheduled task to aggreate the metrics every N minutes
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
-- [ ] Create a SWAPI client to handle the requests to the SWAPI and swap it at test time to mock the responses
+- [x] Create a SWAPI client to handle the requests to the SWAPI
 
 ## Code Quality and Testing
 
-- [ ] Setup ESLint
-- [ ] Setup Laravel Pint
+- [x] Setup ESLint
+- [x] Setup Laravel Pint
 - [ ] Setup Github Actions to run tests and linting
 - [ ] Setup PHPStan
 - [ ] Setup PHPMD
+- [ ] Test 404 cases and invalid data
+- [ ] Install husky and prevent commit if there are linting errors
 
 ## UI
 
-- [ ] Pagination for people
+- [x] Pagination for people
 - [x] Detail page for people
 - [x] Detail page for movies
-- [ ] Clean the search results on search type change
+- [x] Clean the search results on search type change
 - [x] Filter by name or tile either movies or people in the Index
 - [ ] Create a button component
 - [ ] Override tailwind colors and typography with Swstarter colors
 - [ ] Migrate to Typescript
+
+## Bugs
+
+- [ ] total_pages is not correctly set when listing all people (always displays 1)

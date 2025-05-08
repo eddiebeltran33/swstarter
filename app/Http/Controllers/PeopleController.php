@@ -2,36 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\SWAAPIClient;
+
 
 class PeopleController extends Controller
 {
-    function show()
+    protected SWAAPIClient $swapiClient;
+
+    public function __construct(SWAAPIClient $swapiClient)
     {
+        $this->swapiClient = $swapiClient;
+    }
+
+
+    function show(int $id)
+    {
+        $response = $this->swapiClient->getPersonById($id);
         return inertia('People/Show', [
             'person' => [
-                'name' => 'Luke Skywalker',
-                'birth_year' => '24BBY',
-                'gender' => 'male',
-                'eye_color' => 'brown',
-                'hair_color' => 'black',
-                'height' => 183,
-                'mass' => 85,
+                'name' => $response->name,
+                'birth_year' => $response->birthYear,
+                'gender' => $response->gender,
+                'eye_color' => $response->eyeColor,
+                'hair_color' => $response->hairColor,
+                'height' => $response->height,
+                'mass' => $response->mass,
             ],
-            'movies' => [
-                [
-                    'title' => 'A New Hope',
-                    'id' => "1",
-                ],
-                [
-                    'title' => 'The Empire Strikes Back',
-                    'id' => "2",
-                ],
-                [
-                    'title' => 'Return of the Jedi',
-                    'id' => "3",
-                ],
-            ]
+            'movies' => $response->movies
         ]);
     }
 }
