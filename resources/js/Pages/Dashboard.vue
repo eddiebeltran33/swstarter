@@ -166,7 +166,7 @@ watch(
                                 type="text"
                                 v-model="searchQuery"
                                 :placeholder="placeholder"
-                                class="w-full rounded-lg border border-gray-300 p-3 placeholder-gray-400 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                class="w-full rounded-lg border border-gray-300 p-3 placeholder-gray-400 focus:border-transparent focus:ring-blue-500"
                                 @keydown.enter="performSearch"
                             />
                         </div>
@@ -174,7 +174,7 @@ watch(
                         <!-- Search Button -->
                         <button
                             type="button"
-                            class="w-full rounded-full bg-emerald-500 px-4 py-3 font-semibold text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            class="w-full rounded-full bg-emerald-500 px-4 py-3 font-semibold text-white shadow-sm hover:bg-emerald-600 focus:ring-gray-400"
                             @click="performSearch"
                             :disabled="isLoading"
                         >
@@ -226,7 +226,7 @@ watch(
                                     </span>
                                     <Link
                                         :href="`/people/${person.id}`"
-                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm hover:bg-emerald-600 focus:ring-emerald-500 focus:ring-offset-2"
                                     >
                                         See Details
                                     </Link>
@@ -242,7 +242,7 @@ watch(
                                     <button
                                         @click="loadMorePeople"
                                         :disabled="isLoadingMore"
-                                        class="rounded-full bg-emerald-500 px-8 py-3 font-semibold text-white shadow-sm ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        class="rounded-full bg-emerald-500 px-8 py-3 font-semibold text-white shadow-sm hover:bg-emerald-600 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         {{
                                             isLoadingMore
@@ -267,7 +267,7 @@ watch(
                                     </span>
                                     <Link
                                         :href="`/movies/${movie.id}`"
-                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                        class="ml-4 rounded-full bg-emerald-500 px-6 py-2 text-xs font-semibold uppercase text-white shadow-sm hover:bg-emerald-600 focus:ring-emerald-500 focus:ring-offset-2"
                                     >
                                         See Details
                                     </Link>
