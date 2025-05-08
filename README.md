@@ -26,10 +26,10 @@
 ## Analytics
 
 - [x] Log individual request (metrics: time, status code, endpoint)
-- [ ] Top five people queried by 5 minute interval
-- [ ] Top five people searches by 5 minute interval
-- [ ] Top five movies queried by 5 minute interval
-- [ ] Top five movies searches by 5 minute interval
+- [ ] Top five people resources visited by 5 minute interval
+- [ ] Top five people search terms by 5 minute interval
+- [ ] Top five movie resources visited by 5 minute interval
+- [ ] Top five movie search terms by 5 minute interval
 - [ ] Average request time by 5 minute interval
 
 ## Architecture
@@ -39,6 +39,7 @@
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
 - [x] Create a SWAPI client to handle the requests to the SWAPI
+- [ ] Use jaeger and a opentelemetry setup to instrument (more realisticaly) the requests
 
 ## Code Quality and Testing
 
@@ -63,6 +64,11 @@
 - [ ] Override tailwind colors and typography with Swstarter colors
 - [ ] Migrate to Typescript
 
-## Bugs
+## Bugs and misconfigurations
 
 - [ ] total_pages is not correctly set when listing all people (always displays 1)
+- [ ] Laravel telescope and laravel horizon auth gates are not properly configured
+
+## Poetic Licenses
+
+- I'm modifying already commited migrations. I wouldn't do this in a real project.
