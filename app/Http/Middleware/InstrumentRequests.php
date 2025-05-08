@@ -52,8 +52,8 @@ class InstrumentRequests
             'http_request_method' => $this->getValueOrNull($request->method()),
             'client_ip' => $this->getValueOrNull($request->ip()),
             'url' => $this->getValueOrNull($request->getUri()),
-            'search_term' => $this->getValueOrNull($request->input('search')), // This remains, might be null for show routes
-            'resource_id' => $this->getValueOrNull($resourceIdValue), // Use the dynamically determined resource ID
+            'search_term' => $this->getValueOrNull($request->input('search')),
+            'resource_id' => $this->getValueOrNull($resourceIdValue),
         ];
 
         ProcessQueryStat::dispatch($event);
@@ -67,7 +67,6 @@ class InstrumentRequests
      */
     public function getValueOrNull($value)
     {
-        // Ensure empty strings, 0, false are not converted to null unless they actually are null
         return $value === '' || $value === 0 || $value === false ? $value : ($value ?: null);
     }
 }
