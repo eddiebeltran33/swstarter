@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Docker and Docker compose installed (tested on Docker Desktop for Mac version v4.40.0) )
+- Docker and Docker compose installed (tested on Docker Desktop for Mac version v4.40.0)
 
 ## Installation
 
@@ -35,8 +35,7 @@
 ## Architecture
 
 - [ ] Use a cache layer to avoid hitting the SWAPI too often
-- [ ] Use a queue to process the "traces" (metrics) in the background
-- [ ] Create a scheduled task to aggreate the metrics every N minutes
+- [x] Use a queue to process the "traces" (metrics) in the background
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
 - [x] Create a SWAPI client to handle the requests to the SWAPI
@@ -51,6 +50,7 @@
 - [ ] Test 404 cases and invalid data
 - [ ] Install husky and prevent commit if there are linting errors
 - [ ] Inertia endpoint tests (Laravel dusk)
+- [ ] Mock the SWAPI client to avoid hitting the SWAPI
 
 ## UI
 
