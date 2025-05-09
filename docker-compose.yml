@@ -63,6 +63,20 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    composer:
+        image: 'composer:2.8.4'
+        volumes:
+            - '.:/app'
+        working_dir: '/app'
+        networks:
+            - sail
+    node:
+        image: 'node:22'
+        volumes:
+            - '.:/app'
+        working_dir: '/app'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
