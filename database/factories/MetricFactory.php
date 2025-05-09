@@ -17,11 +17,16 @@ class MetricFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
-            'numeric_value' => $this->faker->randomFloat(4, 0, 10000),
-            'string_value' => $this->faker->word(),
-            'start_at' => $this->faker->dateTime(),
-            'end_at' => $this->faker->dateTime(),
+            'name' => $this->faker->randomElement(
+                [
+                    'average_request_duration',
+                    'top_movie_resources_visited',
+                    'top_movie_search_terms',
+                    'top_people_resources_visited',
+                    'top_people_search_terms',
+                    'total_errors'
+                ]
+            ),
         ];
     }
 }
