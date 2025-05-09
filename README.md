@@ -9,12 +9,47 @@
 
 1. Clone the repository
     ```bash
-    git clone https://github.com/eddiebeltran33/swstarter.git
+    git clone https://github.com/eddiebeltran33/swstarter.git &&
+    cd swstarter
     ```
-2. Install dependencies (not working yet)
+2. Create the `.env` file
+
     ```bash
-    ./setup.sh
+    cp .env.example .env
     ```
+
+3. Install dependencies backend dependencies
+
+    ```bash
+    docker compose run --rm composer install --ignore-platform-reqs --no-interaction --prefer-dist --no-scripts
+    ```
+
+4. Install dependencies frontend dependencies
+    ```bash
+    docker compose run --rm node npm install
+    ```
+5. Boot up Laravel Sail
+    ```bash
+    ./vendor/bin/sail up
+    #you can also do ./vendor/bin/sail up -d to run in detached mode
+    ```
+6. Migrate the database (Do this in a new terminal)
+    ```bash
+    ./vendor/bin/sail artisan migrate
+    ```
+7. Run Laravel Horizon (Do this in a new terminal)
+    ```bash
+    ./vendor/bin/sail artisan horizon
+    ```
+8. Run the Schedule worker to process the metrics (Do this in a new terminal)
+    ```bash
+    ./vendor/bin/sail artisan schedule:work
+    ```
+9. Run the tests to check if everything is working
+    ```bash
+    ./vendor/bin/sail test
+    ```
+10. You should be able to access the app at [http://localhost](http://localhost)
 
 ## Endpoints
 
