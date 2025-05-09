@@ -79,7 +79,7 @@
 
 ## Architecture
 
-- [ ] Use a cache layer to avoid hitting the SWAPI too often
+- [ ] Use a cache layer to avoid hitting the SWAPI too often **(Non negotiable)**
 - [x] Use a queue to process the "traces" (metrics) in the background
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
@@ -93,12 +93,14 @@
 - [ ] Setup Github Actions to run tests and linting
 - [ ] Setup PHPStan
 - [ ] Setup PHPMD
-- [-] Test 404 cases and invalid data
+- [ ] Test 404 cases and invalid data
 - [ ] Install husky and prevent commit if there are linting errors
 - [ ] Inertia endpoint tests (Laravel dusk)
 - [ ] Mock the SWAPI client to avoid hitting the SWAPI
-- [ ] Setup load testing with k6
+- [ ] Setup load testing with k6 or pest
 - [ ] Setup EditorConfig for VSCode
+- [ ] Mock the SWAPI client to avoid hitting the SWAPI in tests **(Non negotiable)**
+- [ ] Allow the tests to run middleware for instrumentation and metrics and assert the generated metrics **(Non negotiable)**
 
 ## UI
 
@@ -118,16 +120,10 @@
 - [ ] Laravel telescope and laravel horizon auth gates are not properly configured
 - [ ] Resource id must be sanitized before being stored in the database
 - [ ] The search term in both people and movie endpoints should probably be normalized for easier grouping in
-      aggregation process
+      aggregation process (trim spaces, lowercase, remove special characters, etc)
 
 ## Poetic Licenses (stuff that wouldn't cut it in a real project)
 
-- The decision of waiting 1 minute for the metrics to be aggregated is just a finger in the air (it's impossible to be
-  sure that this time will be enough to process all the requests that arrive to the system in the previous 5 mins).
 - I'm modifying already commited migrations.
 - I would not use this setup for real instrumentation / APM. I'm learning about the open telemetry
   ecosystem, but If I had to take a decision right now, I would go with an APM like Elastic APM or even Sentry.
-- request_metrics table has created_at, started_at and ended_at columns. I've tried many strategies to fetch records
-  by intervals considering the time of the write vs the time of the request measured by the server, but this requires
-  a deeper dive taking into consideration that a there is potential of leaving records oustide the window interval
-  aggregation process just because they are still on the queue.
