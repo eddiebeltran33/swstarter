@@ -28,34 +28,38 @@
     ```bash
     docker compose run --rm node npm install
     ```
-5. Boot up Laravel Sail
+5. Build the frontend assets
+    ```bash
+    docker compose run --rm node npm run build
+    ```
+6. Boot up Laravel Sail
     ```bash
     ./vendor/bin/sail up
     #you can also do ./vendor/bin/sail up -d to run in detached mode
     ```
-6. Generate the application key
+7. Generate the application key
 
     ```bash
     ./vendor/bin/sail artisan key:generate
     ```
 
-7. Migrate the database (Do this in a new terminal)
+8. Migrate the database (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan migrate
     ```
-8. Run Laravel Horizon (Do this in a new terminal)
+9. Run Laravel Horizon (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan horizon
     ```
-9. Run the Schedule worker to process the metrics (Do this in a new terminal)
+10. Run the Schedule worker to process the metrics (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan schedule:work
     ```
-10. Run the tests to check if everything is working
+11. Run the tests to check if everything is working
     ```bash
     ./vendor/bin/sail test
     ```
-11. You should be able to access the app at [http://localhost](http://localhost)
+12. You should be able to access the app at [http://localhost](http://localhost)
 
 ## Endpoints
 
