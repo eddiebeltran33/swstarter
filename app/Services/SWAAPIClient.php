@@ -27,7 +27,7 @@ class SWAAPIClient
     private function makeRequest(string $method, string $endpoint, array $query = []): array
     {
         $response = $this->httpClient->{$method}(self::BASE_URL . $endpoint, $query);
-        $response->throw();
+
         return $response->json() ?? [];
     }
 

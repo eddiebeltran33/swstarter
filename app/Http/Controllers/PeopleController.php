@@ -18,6 +18,10 @@ class PeopleController extends Controller
     function show(int $id)
     {
         $response = $this->swapiClient->getPersonById($id);
+        if (!$response) {
+            return redirect(status: 404)->route('dashboard')->with('error', 'Person not found');
+        }
+
         return inertia('People/Show', [
             'person' => [
                 'name' => $response->name,

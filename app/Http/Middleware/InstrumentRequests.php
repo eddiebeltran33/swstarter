@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Jobs\ProcessQueryStat;
+use App\Jobs\ProcessRequestStat;
 use Closure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,8 +40,9 @@ class InstrumentRequests
         $originalEndTime = microtime(true);
 
         // Convert timestamps to microsecond precision datetime strings
-        $startDatetime = Carbon::createFromTimestampMs($originalStartTime * 1000);
-        $endDatetime = Carbon::createFromTimestampMs($originalEndTime * 1000);
+        $startDatetime = Carbon::createFromTimestampMs($originalStartTime * 1000, timezone: config('app.timezone'));
+        $endDatetime = Carbon::createFromTimestampMs($originalEndTime * 1000, timezone: config('app.timezone'));
+
 
         $event = [
             'action' => $this->getValueOrNull($route->getActionName()),
@@ -54,9 +55,10 @@ class InstrumentRequests
             'url' => $this->getValueOrNull($request->getUri()),
             'search_term' => $this->getValueOrNull($request->input('search')),
             'resource_id' => $this->getValueOrNull($resourceIdValue),
+            'http_status_code' => $this->getValueOrNull($response->getStatusCode()),
         ];
 
-        ProcessQueryStat::dispatch($event);
+        ProcessRequestStat::dispatch($event);
     }
 
     /**

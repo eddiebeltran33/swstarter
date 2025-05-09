@@ -29,6 +29,11 @@ class MovieController extends Controller
         // Fetch the movie details from the SWAPI client
         $response = $this->swapiClient->getMovieById($id);
 
+        if (!$response) {
+            // return 404 and redirect to the index page (/)
+            return redirect()->route('dashboard')
+                ->withErrors(['message' => 'Movie not found']);
+        }
 
         return inertia('Movies/Show', [
             'movie' => [

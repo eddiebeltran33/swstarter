@@ -1,7 +1,15 @@
 <?php
 
 use App\Jobs\CreateMetrics;
-use Illuminate\Console\Scheduling\Schedule;
+use GuzzleHttp\Promise\Create;
+use Illuminate\Support\Facades\Schedule;
 
 
-// Schedule::job(new CreateMetrics)->everyFiveMinutes()->runInBackground();
+// Schedule::job(new CreateMetrics())->everyFiveMinutes();
+
+
+Schedule::call(
+    function () {
+        CreateMetrics::dispatch()->delay(now()->addMinute());
+    }
+)->everyFiveMinutes();

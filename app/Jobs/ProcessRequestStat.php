@@ -2,13 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Models\QueryStat;
+use App\Models\RequestStat;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class ProcessQueryStat implements ShouldQueue
+class ProcessRequestStat implements ShouldQueue
 {
     use Queueable;
+
 
 
 
@@ -19,6 +20,7 @@ class ProcessQueryStat implements ShouldQueue
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->onQueue('metrics'); // Specify the queue name if needed
     }
 
     /**
@@ -28,7 +30,7 @@ class ProcessQueryStat implements ShouldQueue
     {
         $event = $this->data;
 
-        QueryStat::create([
+        RequestStat::create([
             'action' => $event['action'],
             'outcome' => $event['outcome'],
             'started_at' => $event['started_at'],
@@ -39,6 +41,7 @@ class ProcessQueryStat implements ShouldQueue
             'url' => $event['url'],
             'search_term' => $event['search_term'],
             'resource_id' => $event['resource_id'],
+            'http_status_code' => $event['http_status_code'],
         ]);
     }
 }

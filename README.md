@@ -26,11 +26,12 @@
 ## Analytics
 
 - [x] Log individual request (metrics: time, status code, endpoint)
-- [ ] Top five people resources visited by 5 minute interval
-- [ ] Top five people search terms by 5 minute interval
-- [ ] Top five movie resources visited by 5 minute interval
-- [ ] Top five movie search terms by 5 minute interval
-- [ ] Average request time by 5 minute interval
+- [x] Top five people resources visited by 5 minute interval
+- [x] Top five people search terms by 5 minute interval
+- [x] Top five movie resources visited by 5 minute interval
+- [x] Top five movie search terms by 5 minute interval
+- [x] Total errors in the last 5 minutes
+- [x] Average request time by 5 minute interval
 
 ## Architecture
 
@@ -48,10 +49,12 @@
 - [ ] Setup Github Actions to run tests and linting
 - [ ] Setup PHPStan
 - [ ] Setup PHPMD
-- [ ] Test 404 cases and invalid data
+- [-] Test 404 cases and invalid data
 - [ ] Install husky and prevent commit if there are linting errors
 - [ ] Inertia endpoint tests (Laravel dusk)
 - [ ] Mock the SWAPI client to avoid hitting the SWAPI
+- [ ] Setup load testing with k6
+- [ ] Setup EditorConfig for VSCode
 
 ## UI
 
@@ -61,14 +64,26 @@
 - [x] Clean the search results on search type change
 - [x] Filter by name or tile either movies or people in the Index
 - [ ] Create a button component
-- [ ] Override tailwind colors and typography with Swstarter colors
+- [ ] Override tailwind colors and typography with Swstarter Zeplin mockup values
 - [ ] Migrate to Typescript
+- [ ] A flash message component to display error messages
 
 ## Bugs and misconfigurations
 
 - [ ] total_pages is not correctly set when listing all people (always displays 1)
 - [ ] Laravel telescope and laravel horizon auth gates are not properly configured
+- [ ] Resource id must be sanitized before being stored in the database
+- [ ] The search term in both people and movie endpoints should probably be normalized for easier grouping in
+      aggregation process
 
-## Poetic Licenses
+## Poetic Licenses (stuff that wouldn't cut it in a real project)
 
-- I'm modifying already commited migrations. I wouldn't do this in a real project.
+- The decision of waiting 1 minute for the metrics to be aggregated is just a finger in the air (it's impossible to be
+  sure that this time will be enough to process all the requests that arrive to the system in the previous 5 mins).
+- I'm modifying already commited migrations.
+- I would not use this setup for real instrumentation / APM. I'm learning about the open telemetry
+  ecosystem, but If I had to take a decision right now, I would go with an APM like Elastic APM or even Sentry.
+- request_metrics table has created_at, started_at and ended_at columns. I've tried many strategies to fetch records
+  by intervals considering the time of the write vs the time of the request measured by the server, but this requires
+  a deeper dive taking into consideration that a there is potential of leaving records oustide the window interval
+  aggregation process just because they are still on the queue.

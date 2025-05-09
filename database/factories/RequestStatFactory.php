@@ -7,9 +7,9 @@ use App\Http\Controllers\Api\PeopleController;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\QueryStat>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RequestStat>
  */
-class QueryStatFactory extends Factory
+class RequestStatFactory extends Factory
 {
     /**
      * Define the model's default state.

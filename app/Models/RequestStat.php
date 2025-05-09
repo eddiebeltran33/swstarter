@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class QueryStat extends Model
+class RequestStat extends Model
 {
-    /** @use HasFactory<\Database\Factories\QueryStatFactory> */
+    /** @use HasFactory<\Database\Factories\RequestStatFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];

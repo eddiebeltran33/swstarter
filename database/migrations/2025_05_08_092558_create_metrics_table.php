@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('metrics', function (Blueprint $table) {
+            $table->comment('Table to store aggregated metrics from the request_stats table');
             $table->id();
-            $table->string('name');
-            $table->decimal('numeric_value', 16, 4);
-            $table->string('string_value');
-            $table->timestamp('start_at');
-            $table->timestamp('end_at');
+            $table->string('name')->comment('Name of the aggregated metric');
+            $table->json('metadata')->nullable()->comment('JSON value of the metric');
+            $table->json('value')->nullable()->comment('JSON value of the metric');
+            $table->timestamp('start_at')->comment('The beginning of the time interval for aggregating query stats');
+            $table->timestamp('end_at')->comment('The end of the time interval for aggregating query stats');
             $table->index(['name', 'start_at', 'end_at'], 'idx_metrics_name_start_end');
+            $table->timestamp('created_at')->useCurrent()->comment('The timestamp when the metric was created');
         });
     }
 

@@ -10,5 +10,5 @@ class Metric extends Model
     /** @use HasFactory<\Database\Factories\MetricFactory> */
     use HasFactory;
     protected $guarded = [];
-    public $timestamps = false;
+    const UPDATED_AT = null;
 }
