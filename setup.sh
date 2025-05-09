@@ -27,10 +27,10 @@ echo "📥 Loading environment variables..."
 export $(grep -v '^#' .env | xargs)
 
 # Start containers in detached mode if they're not running
-if ! docker compose ps | grep -q "laravel.test" || ! docker compose ps | grep -q "Up"; then
-    echo "🐳 Starting Docker containers..."
-    docker compose up -d
-fi
+# if ! docker compose ps | grep -q "laravel.test" || ! docker compose ps | grep -q "Up"; then
+#     echo "🐳 Starting Docker containers..."
+#     docker compose up -d
+# fi
 
 # Install PHP dependencies with Composer
 echo "📦 Installing PHP dependencies..."
