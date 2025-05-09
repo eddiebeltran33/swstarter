@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('start_at')->comment('The beginning of the time interval for aggregating query stats');
             $table->timestamp('end_at')->comment('The end of the time interval for aggregating query stats');
             $table->index(['name', 'start_at', 'end_at'], 'idx_metrics_name_start_end');
-            $table->timestamp('created_at')->useCurrent()->comment('The timestamp when the metric was created');
+            $table->timestamps();
         });
     }
 

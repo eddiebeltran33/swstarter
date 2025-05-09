@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MetricController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Middleware\InstrumentRequests;
@@ -25,6 +26,10 @@ Route::resource('movies', MovieController::class)
     ->middleware(InstrumentRequests::class)
     ->only('show')
     ->name('show', 'movies.show');
+
+Route::resource('metrics', MetricController::class)
+    ->only(['index'])
+    ->name('index', 'metrics.index');
 
 
 require __DIR__ . '/auth.php';

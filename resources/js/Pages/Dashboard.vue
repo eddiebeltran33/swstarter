@@ -34,8 +34,6 @@ const performSearch = async () => {
         queryParams += `&page=${peopleCurrentPage.value}`;
     } else {
         endpoint = '/api/v1/movies';
-        // Movies are not paginated in the UI per requirement,
-        // but the API might support it. We only send page 1 implicitly or no page.
     }
 
     try {
@@ -98,8 +96,6 @@ watch(
     searchType,
     () => {
         searchResults.value = []; // Clear results when search type changes
-        // searchQuery.value = ''; // Optional: uncomment to clear search query on type change
-
         // Reset pagination state for people if switching type
         peopleCurrentPage.value = 1;
         peopleNextPage.value = null;
@@ -180,6 +176,15 @@ watch(
                         >
                             {{ isLoading ? 'SEARCHING...' : 'SEARCH' }}
                         </button>
+
+                        <div class="mt-4 text-center">
+                            <Link
+                                :href="route('metrics.index')"
+                                class="inline-block text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                Go to metrics
+                            </Link>
+                        </div>
                     </div>
 
                     <!-- Right Column: Results -->

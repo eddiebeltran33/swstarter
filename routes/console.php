@@ -1,15 +1,10 @@
 <?php
 
 use App\Jobs\CreateMetrics;
-use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Schedule;
 
+$minutes = config('app.create_metrics_interval_in_minutes', 5);
 
-// Schedule::job(new CreateMetrics())->everyFiveMinutes();
-
-
-Schedule::call(
-    function () {
-        CreateMetrics::dispatch()->delay(now()->addMinute());
-    }
-)->everyFiveMinutes();
+Schedule::job(new CreateMetrics)
+    ->cron("*/{$minutes} * * * *")
+    ->withoutOverlapping(); // to avoid deadlocks

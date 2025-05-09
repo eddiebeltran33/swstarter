@@ -26,12 +26,12 @@
 ## Analytics
 
 - [x] Log individual request (metrics: time, status code, endpoint)
-- [x] Top five people resources visited by 5 minute interval
-- [x] Top five people search terms by 5 minute interval
-- [x] Top five movie resources visited by 5 minute interval
-- [x] Top five movie search terms by 5 minute interval
-- [x] Total errors in the last 5 minutes
-- [x] Average request time by 5 minute interval
+- [x] Top five people resources in a day
+- [x] Top five people search terms by in a day
+- [x] Top five movie resources visited by in a day
+- [x] Top five movie search terms by in a day
+- [x] Total errors in a day
+- [x] Average request time by in a day
 
 ## Architecture
 
