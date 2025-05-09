@@ -78,7 +78,7 @@ class CreateMetrics implements ShouldQueue
             ->where('action', 'LIKE', "%{$resourceType}%")
             ->whereNotNull('search_term')
             ->where('search_term', '!=', '')
-            ->whereBetween('created_at', [$start, $end])
+            ->whereBetween('started_at', [$start, $end])
             ->groupBy('search_term')
             ->orderByDesc('count')
             ->limit(5)
