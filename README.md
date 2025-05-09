@@ -9,8 +9,7 @@
 
 1. Clone the repository
     ```bash
-    git clone https://github.com/eddiebeltran33/swstarter.git &&
-    cd swstarter
+    git clone https://github.com/eddiebeltran33/swstarter.git && cd swstarter
     ```
 2. Create the `.env` file
 
