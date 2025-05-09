@@ -156,7 +156,7 @@ watch(selectedDate, (newDateValue) => {
                         </div>
                         <div
                             v-else-if="error"
-                            class="relative rounded border border-red-400 bg-red-100 px-4 py-10 py-3 text-center text-red-700"
+                            class="relative rounded border border-red-400 bg-red-100 px-4 py-10 text-center text-red-700"
                             role="alert"
                         >
                             <strong class="font-bold">Error!</strong>
