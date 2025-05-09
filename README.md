@@ -33,23 +33,29 @@
     ./vendor/bin/sail up
     #you can also do ./vendor/bin/sail up -d to run in detached mode
     ```
-6. Migrate the database (Do this in a new terminal)
+6. Generate the application key
+
+    ```bash
+    ./vendor/bin/sail artisan key:generate
+    ```
+
+7. Migrate the database (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan migrate
     ```
-7. Run Laravel Horizon (Do this in a new terminal)
+8. Run Laravel Horizon (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan horizon
     ```
-8. Run the Schedule worker to process the metrics (Do this in a new terminal)
+9. Run the Schedule worker to process the metrics (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan schedule:work
     ```
-9. Run the tests to check if everything is working
+10. Run the tests to check if everything is working
     ```bash
     ./vendor/bin/sail test
     ```
-10. You should be able to access the app at [http://localhost](http://localhost)
+11. You should be able to access the app at [http://localhost](http://localhost)
 
 ## Endpoints
 
