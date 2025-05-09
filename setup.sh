@@ -14,11 +14,36 @@ fi
 if [ ! -f .env ]; then
     echo "Creating .env file from .env.example..."
     cp .env.example .env
-
-    # Generate application key
-    docker compose run --rm laravel.test php artisan key:generate
 else
     echo ".env file already exists."
+fi
+
+# Load environment variables from .env
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
+
+# Set user permissions in .env
+echo "Setting user permissions..."
+if grep -q "WWWUSER=" .env; then
+    sed -i.bak "s/WWWUSER=.*/WWWUSER=$(id -u)/" .env
+else
+    echo "WWWUSER=$(id -u)" >> .env
+fi
+
+if grep -q "WWWGROUP=" .env; then
+    sed -i.bak "s/WWWGROUP=.*/WWWGROUP=$(id -g)/" .env
+else
+    echo "WWWGROUP=$(id -g)" >> .env
+fi
+
+# Reload environment variables after modifications
+export $(grep -v '^#' .env | xargs)
+
+# Generate application key if not already set
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:base64:" ]; then
+    echo "Generating application key..."
+    docker compose run --rm laravel.test php artisan key:generate
 fi
 
 # Start the containers
@@ -37,10 +62,14 @@ docker compose exec laravel.test npm run build
 
 # Run migrations
 echo "Running database migrations..."
-docker compose exec laravel.test php artisan migrate
+docker compose exec laravel.test php artisan migrate --seed
+
+# Clear caches
+echo "Clearing application cache..."
+docker compose exec laravel.test php artisan optimize:clear
 
 echo "Setup completed successfully!"
-echo "Your application is now running at http://localhost"
+echo "Your application is now running at http://localhost:${APP_PORT:-80}"
 echo ""
 echo "Common commands:"
 echo "- Start all services: ./vendor/bin/sail up -d"
