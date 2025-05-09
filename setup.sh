@@ -14,10 +14,10 @@ if [ ! -f .env ]; then
     cp .env.example .env
 
     # Generate app key if running in Laravel context
-    if grep -q "APP_KEY=" .env; then
-        echo "🔑 Generating application key..."
-        docker compose run --rm laravel.test php artisan key:generate
-    fi
+    # if grep -q "APP_KEY=" .env; then
+    #     echo "🔑 Generating application key..."
+    #     docker compose run --rm laravel.test php artisan key:generate
+    # fi
 else
     echo "✅ .env file already exists."
 fi
