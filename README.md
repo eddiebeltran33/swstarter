@@ -127,3 +127,5 @@
 - I'm modifying already commited migrations.
 - I would not use this setup for real instrumentation / APM. I'm learning about the open telemetry
   ecosystem, but If I had to take a decision right now, I would go with an APM like Elastic APM or even Sentry.
+- The Star Wars Universe is probably not going to change too often, so I would have probably relied entirely on the cache
+  for the client, and only do a separate process to update the cache every once in a while.
