@@ -10,10 +10,8 @@ class ProcessRequestStat implements ShouldQueue
 {
     use Queueable;
 
-
-
-
     protected array $data;
+
     /**
      * Create a new job instance.
      */

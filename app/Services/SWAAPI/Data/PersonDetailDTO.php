@@ -14,7 +14,7 @@ class PersonDetailDTO
         public readonly string $height,
         public readonly string $mass,
         /**
-         * @param MovieSummaryDTO[] $movies
+         * @param  MovieSummaryDTO[]  $movies
          */
         public readonly array $movies = [],
     ) {}
@@ -22,6 +22,7 @@ class PersonDetailDTO
     public static function fromApiResponse(array $data): self
     {
         $properties = $data['properties'];
+
         return new self(
             id: (int) $data['uid'],
             name: $properties['name'],
@@ -32,7 +33,7 @@ class PersonDetailDTO
             height: $properties['height'],
             mass: $properties['mass'],
             movies: array_map(
-                fn($movie) => MovieSummaryDTO::fromApiResponse($movie),
+                fn ($movie) => MovieSummaryDTO::fromApiResponse($movie),
                 $data['movies']
             )
         );

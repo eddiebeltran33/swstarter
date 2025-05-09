@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\SWAAPIClient;
 
-
 class PeopleController extends Controller
 {
     protected SWAAPIClient $swapiClient;
@@ -14,11 +13,10 @@ class PeopleController extends Controller
         $this->swapiClient = $swapiClient;
     }
 
-
-    function show(int $id)
+    public function show(int $id)
     {
         $response = $this->swapiClient->getPersonById($id);
-        if (!$response) {
+        if (! $response) {
             return redirect(status: 404)->route('dashboard')->with('error', 'Person not found');
         }
 
@@ -32,7 +30,7 @@ class PeopleController extends Controller
                 'height' => $response->height,
                 'mass' => $response->mass,
             ],
-            'movies' => $response->movies
+            'movies' => $response->movies,
         ]);
     }
 }

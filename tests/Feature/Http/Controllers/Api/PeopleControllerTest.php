@@ -1,14 +1,12 @@
 <?php
 
-
-
 test('It returns a person by id and its movies', function () {
     $response = $this->get('/api/v1/people/1');
 
     $response->assertStatus(200)
         ->assertJsonStructure(
             [
-                "data" => [
+                'data' => [
                     'birth_year',
                     'gender',
                     'eye_color',
@@ -20,24 +18,23 @@ test('It returns a person by id and its movies', function () {
                         '*' => [
                             'title',
                             'id',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ]
         );
     $response->assertJsonFragment(
         [
-            "name" => "Luke Skywalker",
+            'name' => 'Luke Skywalker',
         ]
     );
 
     $response->assertJsonFragment(
         [
-            "title" => "A New Hope",
+            'title' => 'A New Hope',
         ]
     );
 });
-
 
 test(
     'it returns the first page of people',
@@ -47,11 +44,11 @@ test(
         $response->assertStatus(200)
             ->assertJsonStructure(
                 [
-                    "data" => [
+                    'data' => [
                         '*' => [
                             'name',
-                        ]
-                    ]
+                        ],
+                    ],
                 ]
             );
         $response->assertJsonFragment(
@@ -74,11 +71,11 @@ test(
         $response->assertStatus(200)
             ->assertJsonStructure(
                 [
-                    "data" => [
+                    'data' => [
                         '*' => [
                             'name',
-                        ]
-                    ]
+                        ],
+                    ],
                 ]
             );
         $response->assertJsonFragment(
@@ -100,11 +97,11 @@ test('it can filter people by name', function () {
     $response->assertStatus(200)
         ->assertJsonStructure(
             [
-                "data" => [
+                'data' => [
                     '*' => [
                         'name',
-                    ]
-                ]
+                    ],
+                ],
             ]
         );
     $response->assertJsonFragment(
@@ -112,7 +109,7 @@ test('it can filter people by name', function () {
             'name' => 'Luke Skywalker',
         ]
     );
-    //asert that we dont see Darth Vader
+    // asert that we dont see Darth Vader
     $response->assertJsonMissing(
         [
             'name' => 'Darth Vader',

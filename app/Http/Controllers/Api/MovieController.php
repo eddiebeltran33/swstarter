@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\SWAAPIClient;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Services\SWAAPI\Data\MovieSummaryDTO;
+use App\Services\SWAAPIClient;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
@@ -32,10 +32,10 @@ class MovieController extends Controller
 
         return response()->json(
             [
-                "data" => $filmListData,
+                'data' => $filmListData,
                 // SWAPI /films endpoint doesn't seem to provide total_records directly in the main response,
                 // so count of returned items is used.
-                "total" => count($filmListData),
+                'total' => count($filmListData),
             ]
         );
     }
@@ -46,20 +46,20 @@ class MovieController extends Controller
         // dd($route->parameters());
         $movieDto = $this->swapiClient->getMovieById($id);
 
-        if (!$movieDto) {
+        if (! $movieDto) {
             return response()->json(['message' => 'Film not found'], 404);
         }
 
         return response()->json([
-            "data" => [
-                "id" => $movieDto->id,
-                "title" => $movieDto->title,
-                "opening_crawl" => $movieDto->openingCrawl,
-                "director" => $movieDto->director,
-                "producer" => $movieDto->producer,
-                "release_date" => $movieDto->releaseDate,
-                "characters" => $movieDto->characters,
-            ]
+            'data' => [
+                'id' => $movieDto->id,
+                'title' => $movieDto->title,
+                'opening_crawl' => $movieDto->openingCrawl,
+                'director' => $movieDto->director,
+                'producer' => $movieDto->producer,
+                'release_date' => $movieDto->releaseDate,
+                'characters' => $movieDto->characters,
+            ],
         ]);
     }
 }

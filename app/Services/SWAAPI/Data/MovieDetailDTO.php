@@ -5,7 +5,7 @@ namespace App\Services\SWAAPI\Data;
 class MovieDetailDTO
 {
     /**
-     * @param string[] $characterUrls
+     * @param  string[]  $characterUrls
      */
     public function __construct(
         public readonly int $id,
@@ -16,7 +16,6 @@ class MovieDetailDTO
         public readonly string $releaseDate,
         public readonly array $characterUrls,
         /**
-         *
          * @var PersonSummaryDTO[]
          */
         public readonly array $characters = [],
@@ -25,6 +24,7 @@ class MovieDetailDTO
     public static function fromApiResponse(array $data): self
     {
         $properties = $data['properties'];
+
         return new self(
             id: (int) $data['uid'],
             title: $properties['title'],

@@ -24,7 +24,7 @@ class MetricFactory extends Factory
                     'top_movie_search_terms',
                     'top_people_resources_visited',
                     'top_people_search_terms',
-                    'total_errors'
+                    'total_errors',
                 ]
             ),
         ];

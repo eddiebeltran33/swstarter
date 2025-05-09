@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
+use App\Services\SWAAPI\Data\MovieDetailDTO;
+use App\Services\SWAAPI\Data\MovieSummaryDTO;
+use App\Services\SWAAPI\Data\PaginatedPeopleResponseDTO;
+use App\Services\SWAAPI\Data\PersonDetailDTO;
+use App\Services\SWAAPI\Data\PersonSummaryDTO;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\PendingRequest;
-use App\Services\SWAAPI\Data\PersonSummaryDTO;
-use App\Services\SWAAPI\Data\PersonDetailDTO;
-use App\Services\SWAAPI\Data\MovieSummaryDTO;
-use App\Services\SWAAPI\Data\MovieDetailDTO;
-use App\Services\SWAAPI\Data\PaginatedPeopleResponseDTO;
 
 class SWAAPIClient
 {
     private const BASE_URL = 'https://swapi.tech/api';
+
     private PendingRequest $httpClient;
 
     public function __construct()
@@ -26,7 +27,7 @@ class SWAAPIClient
      */
     private function makeRequest(string $method, string $endpoint, array $query = []): array
     {
-        $response = $this->httpClient->{$method}(self::BASE_URL . $endpoint, $query);
+        $response = $this->httpClient->{$method}(self::BASE_URL.$endpoint, $query);
 
         return $response->json() ?? [];
     }
@@ -34,7 +35,7 @@ class SWAAPIClient
     /**
      * Fetches people from SWAPI.
      */
-    public function getPeople(string|null $search = null, int|string|null $page = null): PaginatedPeopleResponseDTO
+    public function getPeople(?string $search = null, int|string|null $page = null): PaginatedPeopleResponseDTO
     {
         $queryParams = [];
 
@@ -69,7 +70,6 @@ class SWAAPIClient
             $totalPages = (int) $responseArray['total_pages'];
         }
 
-
         return new PaginatedPeopleResponseDTO(
             people: $peopleDTOs,
             currentPage: $currentPage,
@@ -90,9 +90,8 @@ class SWAAPIClient
             return null;
         }
 
-        //fetch the movies and attach them to the person
+        // fetch the movies and attach them to the person
         $allMovieSummaries = $this->getMovies(); // There's no way to fetch movies along with a person
-
 
         $personUrl = "https://www.swapi.tech/api/people/{$id}";
 
@@ -104,15 +103,17 @@ class SWAAPIClient
                 ];
             }
         }
+
         // dd($response);
         return PersonDetailDTO::fromApiResponse($response['result']);
     }
 
     /**
      * Fetches movies from SWAPI.
+     *
      * @return MovieSummaryDTO[]
      */
-    public function getMovies(string|null $search = null): array
+    public function getMovies(?string $search = null): array
     {
         $queryParams = [];
         if ($search !== null && $search !== '') {
@@ -128,6 +129,7 @@ class SWAAPIClient
                 $movieDTOs[] = MovieSummaryDTO::fromApiResponse($movie);
             }
         }
+
         return $movieDTOs;
     }
 
@@ -145,7 +147,8 @@ class SWAAPIClient
 
     /**
      * Fetches multiple raw resources by their full URLs.
-     * @param string[] $urls
+     *
+     * @param  string[]  $urls
      */
     private function getRawResourcesByUrls(array $urls): array
     {
@@ -157,6 +160,7 @@ class SWAAPIClient
                     $pendingPools[] = $pool->withoutVerifying()->acceptJson()->get($url);
                 }
             }
+
             return $pendingPools;
         });
 
@@ -169,12 +173,14 @@ class SWAAPIClient
                 }
             }
         }
+
         return $results;
     }
 
     /**
      * Fetches multiple people by their full URLs and returns them as PersonSummaryDTOs.
-     * @param string[] $characterUrls
+     *
+     * @param  string[]  $characterUrls
      * @return PersonSummaryDTO[]
      */
     public function getPeopleByUrls(array $characterUrls): array
@@ -184,12 +190,14 @@ class SWAAPIClient
         foreach ($rawResources as $resourceData) {
             $peopleDTOs[] = PersonSummaryDTO::fromApiResponse($resourceData);
         }
+
         return $peopleDTOs;
     }
+
     /**
      * Parses the page number from a URL.
      */
-    public static function parsePageFromUrl(string|null $url): ?int
+    public static function parsePageFromUrl(?string $url): ?int
     {
         if ($url === null) {
             return null;
@@ -197,6 +205,7 @@ class SWAAPIClient
         $parsedUrl = parse_url($url);
 
         parse_str($parsedUrl['query'], $queryParams);
+
         return isset($queryParams['page']) ? (int) $queryParams['page'] : null;
     }
 }

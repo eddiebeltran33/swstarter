@@ -11,5 +11,6 @@ class RequestStat extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
     const UPDATED_AT = null;
 }

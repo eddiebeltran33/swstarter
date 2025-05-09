@@ -123,7 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-
-    "create_metrics_interval_in_minutes" => env("CREATE_METRICS_INTERVAL_IN_MINUTES", 5), // default to 5 minutes
+    'create_metrics_interval_in_minutes' => env('CREATE_METRICS_INTERVAL_IN_MINUTES', 5), // default to 5 minutes
 
 ];

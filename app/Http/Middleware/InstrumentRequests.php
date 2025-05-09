@@ -3,11 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Jobs\ProcessRequestStat;
-use Closure;
 use Carbon\Carbon;
+use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Arr;
+use Symfony\Component\HttpFoundation\Response;
 
 class InstrumentRequests
 {
@@ -23,10 +23,6 @@ class InstrumentRequests
 
     /**
      * Perform actions after the response has been sent to the browser.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @return void
      */
     public function terminate(Request $request, Response $response): void
     {
@@ -42,7 +38,6 @@ class InstrumentRequests
         // Convert timestamps to microsecond precision datetime strings
         $startDatetime = Carbon::createFromTimestampMs($originalStartTime * 1000, timezone: config('app.timezone'));
         $endDatetime = Carbon::createFromTimestampMs($originalEndTime * 1000, timezone: config('app.timezone'));
-
 
         $event = [
             'action' => $this->getValueOrNull($route->getActionName()),
@@ -64,7 +59,7 @@ class InstrumentRequests
     /**
      * Get value or return null.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function getValueOrNull($value)

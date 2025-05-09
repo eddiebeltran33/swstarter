@@ -9,7 +9,6 @@ class PersonSummaryDTO
         public readonly string $name,
     ) {}
 
-
     public static function fromApiResponse(array $data): self
     {
         // Search results for people list items under 'properties'

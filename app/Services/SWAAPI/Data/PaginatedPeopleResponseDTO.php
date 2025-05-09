@@ -5,7 +5,7 @@ namespace App\Services\SWAAPI\Data;
 class PaginatedPeopleResponseDTO
 {
     /**
-     * @param PersonSummaryDTO[] $people
+     * @param  PersonSummaryDTO[]  $people
      */
     public function __construct(
         public readonly array $people,

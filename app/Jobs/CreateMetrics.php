@@ -4,16 +4,17 @@ namespace App\Jobs;
 
 use App\Models\Metric;
 use App\Models\RequestStat;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\DB;
 
 class CreateMetrics implements ShouldQueue
 {
     use Queueable;
 
     public Carbon $start;
+
     public Carbon $end;
 
     public function __construct()
@@ -44,12 +45,12 @@ class CreateMetrics implements ShouldQueue
         // upsert on (name + start + end)
         Metric::updateOrCreate(
             [
-                'name'     => $name,
+                'name' => $name,
                 'start_at' => $start,
             ],
             [
                 'value' => $json,
-                'end_at'   => $end
+                'end_at' => $end,
             ]
         );
     }
@@ -93,7 +94,7 @@ class CreateMetrics implements ShouldQueue
     {
         $avg = RequestStat::whereBetween('started_at', [$start, $end])->avg('duration');
 
-        if (!is_null($avg)) {
+        if (! is_null($avg)) {
             $this->storeMetric('average_request_duration', $start, $end, [
                 'average_duration_ms' => (float) $avg,
             ]);

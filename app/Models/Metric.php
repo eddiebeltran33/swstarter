@@ -9,6 +9,7 @@ class Metric extends Model
 {
     /** @use HasFactory<\Database\Factories\MetricFactory> */
     use HasFactory;
+
     protected $guarded = [];
     // const UPDATED_AT = null;
 }

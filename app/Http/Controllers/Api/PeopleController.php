@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\SWAAPIClient;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Services\SWAAPI\Data\PersonSummaryDTO;
+use App\Services\SWAAPIClient;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PeopleController extends Controller
 {
@@ -20,7 +20,7 @@ class PeopleController extends Controller
     public function index(Request $request): JsonResponse
     {
         $searchQuery = $request->query('search');
-        $pageQuery = $request->query('page', "1");
+        $pageQuery = $request->query('page', '1');
 
         $paginatedPeopleResponse = $this->swapiClient->getPeople(
             $searchQuery,
@@ -36,12 +36,12 @@ class PeopleController extends Controller
 
         return response()->json(
             [
-                "data" => $peopleListData,
-                "current_page" => $paginatedPeopleResponse->currentPage,
-                "next_page_number" => $paginatedPeopleResponse->nextPage,
-                "per_page" => $paginatedPeopleResponse->perPage,
-                "total_records" => $paginatedPeopleResponse->totalRecords,
-                "total_pages" => $paginatedPeopleResponse->totalPages,
+                'data' => $peopleListData,
+                'current_page' => $paginatedPeopleResponse->currentPage,
+                'next_page_number' => $paginatedPeopleResponse->nextPage,
+                'per_page' => $paginatedPeopleResponse->perPage,
+                'total_records' => $paginatedPeopleResponse->totalRecords,
+                'total_pages' => $paginatedPeopleResponse->totalPages,
             ]
         );
     }
@@ -50,13 +50,13 @@ class PeopleController extends Controller
     {
         $personDto = $this->swapiClient->getPersonById($id);
 
-        if (!$personDto) {
+        if (! $personDto) {
             return response()->json(['message' => 'Person not found'], 404);
         }
 
         return response()->json(
             [
-                "data" => [
+                'data' => [
                     'id' => $personDto->id,
                     'name' => $personDto->name,
                     'birth_year' => $personDto->birthYear,
@@ -65,8 +65,8 @@ class PeopleController extends Controller
                     'hair_color' => $personDto->hairColor,
                     'height' => $personDto->height,
                     'mass' => $personDto->mass,
-                    "movies" => $personDto->movies,
-                ]
+                    'movies' => $personDto->movies,
+                ],
             ]
         );
     }

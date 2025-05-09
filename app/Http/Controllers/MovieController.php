@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Services\SWAAPIClient;
-use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
-
     /**
      * The SWAPI client instance.
-     *
-     * @var \App\Services\SWAAPIClient
      */
     protected SWAAPIClient $swapiClient;
 
@@ -19,7 +15,6 @@ class MovieController extends Controller
     {
         $this->swapiClient = $swapiClient;
     }
-
 
     /**
      * Display the specified resource.
@@ -29,7 +24,7 @@ class MovieController extends Controller
         // Fetch the movie details from the SWAPI client
         $response = $this->swapiClient->getMovieById($id);
 
-        if (!$response) {
+        if (! $response) {
             // return 404 and redirect to the index page (/)
             return redirect()->route('dashboard')
                 ->withErrors(['message' => 'Movie not found']);
@@ -40,7 +35,7 @@ class MovieController extends Controller
                 'title' => $response->title,
                 'opening_crawl' => $response->openingCrawl,
             ],
-            "characters" => $response->characters,
+            'characters' => $response->characters,
         ]);
     }
 }

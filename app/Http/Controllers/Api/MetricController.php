@@ -19,8 +19,6 @@ class MetricController extends Controller
         $startOfDay = $day->copy()->startOfDay();
         $endOfDay = $day->copy()->endOfDay();
 
-
-
         return Metric::whereBetween('start_at', [$startOfDay, $endOfDay])
             ->orderBy('id', 'desc')
             ->get();

@@ -5,7 +5,7 @@ namespace App\Services\SWAAPI\Data;
 class MovieSummaryDTO
 {
     /**
-     * @param string[] $characterUrls
+     * @param  string[]  $characterUrls
      */
     public function __construct(
         public readonly int $id,
