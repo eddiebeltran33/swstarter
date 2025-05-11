@@ -9,11 +9,14 @@ use App\Services\SWAAPI\Data\PersonDetailDTO;
 use App\Services\SWAAPI\Data\PersonSummaryDTO;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Pool;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class SWAAPIClient
 {
     private const BASE_URL = 'https://swapi.tech/api';
+
+    public const CACHE_PREFIX = 'swapi_cache:';
 
     private PendingRequest $httpClient;
 
@@ -27,6 +30,12 @@ class SWAAPIClient
      */
     private function makeRequest(string $method, string $endpoint, array $query = []): array
     {
+        $cacheKey = $this->getRequestCacheSignatureKey($method, $endpoint, $query);
+        // Check if the response is remembered in the cache
+        $response = Cache::remember($cacheKey, now()->addDay(), function () use ($method, $endpoint, $query) {
+            return $this->httpClient->{$method}(self::BASE_URL.$endpoint, $query);
+        });
+
         $response = $this->httpClient->{$method}(self::BASE_URL.$endpoint, $query);
 
         return $response->json() ?? [];
@@ -207,5 +216,16 @@ class SWAAPIClient
         parse_str($parsedUrl['query'], $queryParams);
 
         return isset($queryParams['page']) ? (int) $queryParams['page'] : null;
+    }
+
+    private function getRequestCacheSignatureKey(string $method, string $endpoint, array $query = []): string
+    {
+        if (empty($query)) {
+            return md5($method.$endpoint);
+        }
+        // Sort the query parameters to ensure consistent ordering
+        ksort($query);
+
+        return self::CACHE_PREFIX.md5($method.$endpoint.json_encode($query));
     }
 }
