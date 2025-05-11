@@ -84,7 +84,8 @@
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
 - [x] Create a SWAPI client to handle the requests to the SWAPI
-- [ ] Use jaeger and a opentelemetry setup to instrument (more realisticaly) the requests
+- [ ] Use jaeger + opentelemetry setup to instrument (more realisticaly)
+- [ ] Setup a Docker production image for both php and frontend asset builds
 
 ## Code Quality and Testing
 
@@ -104,7 +105,7 @@
 
 ## UI
 
-- [x] Pagination for people
+- [x] Index / Pagination for people and movies
 - [x] Detail page for people
 - [x] Detail page for movies
 - [x] Clean the search results on search type change
