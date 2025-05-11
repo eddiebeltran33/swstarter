@@ -16,15 +16,15 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
-Route::resource('people', PeopleController::class)
-    ->middleware(InstrumentRequests::class)
-    ->only(['show'])
-    ->name('show', 'people.show');
+Route::middleware(InstrumentRequests::class)->group(function () {
+    Route::resource('people', PeopleController::class)
+        ->only(['show'])
+        ->name('show', 'people.show');
 
-Route::resource('movies', MovieController::class)
-    ->middleware(InstrumentRequests::class)
-    ->only('show')
-    ->name('show', 'movies.show');
+    Route::resource('movies', MovieController::class)
+        ->only('show')
+        ->name('show', 'movies.show');
+});
 
 Route::resource('metrics', MetricController::class)
     ->only(['index'])
