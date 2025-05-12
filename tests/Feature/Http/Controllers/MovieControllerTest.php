@@ -1,7 +1,6 @@
 <?php
 
 use App\Jobs\CreateMetrics;
-use App\Models\Metric;
 
 it('can list movie 1 - A New Hope', function () {
     // enable middleware

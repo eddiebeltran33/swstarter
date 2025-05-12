@@ -17,13 +17,13 @@
     cp .env.example .env
     ```
 
-3. Install dependencies backend dependencies
+3. Install backend dependencies
 
     ```bash
     docker compose run --rm composer install --ignore-platform-reqs --no-interaction --prefer-dist --no-scripts
     ```
 
-4. Install dependencies frontend dependencies
+4. Install frontend dependencies
     ```bash
     docker compose run --rm node npm install
     ```
@@ -42,11 +42,11 @@
     ./vendor/bin/sail artisan key:generate
     ```
 
-8. Migrate the app and testing databases (Do this in a new terminal)
+8. Migrate the local and testing databases (Do this in a new terminal)
     ```bash
     ./vendor/bin/sail artisan migrate:fresh && ./vendor/bin/sail artisan migrate:fresh --database testing
     ```
-9. Run Laravel Horizon (Do this in a new terminal)
+9. Run Laravel Horizon (Do this in a new terminal).
     ```bash
     ./vendor/bin/sail artisan horizon
     ```
@@ -59,6 +59,9 @@
     ./vendor/bin/sail test
     ```
 12. You should be able to access the app at [http://localhost](http://localhost)
+
+    - Main Dashboard: [http://localhost/dashboard](http://localhost/dashboard)
+    - Metrics Dashboard: [http://localhost/metrics](http://localhost/metrics)
 
 ## Endpoints
 
@@ -85,7 +88,7 @@
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
 - [x] Create a SWAPI client to handle the requests to the SWAPI
 - [ ] Use jaeger + opentelemetry setup to instrument (more realisticaly)
-- [ ] Setup a Docker production image for both php and frontend asset builds
+- [ ] Setup a Docker production image for both php monolith and frontend asset builder
 
 ## Code Quality and Testing
 
