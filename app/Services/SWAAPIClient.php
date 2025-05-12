@@ -242,6 +242,6 @@ class SWAAPIClient
         // Sort the query parameters to ensure consistent ordering
         ksort($query);
 
-        return self::CACHE_PREFIX . ($method . $endpoint . json_encode($query));
+        return self::CACHE_PREFIX . md5($method . $endpoint . json_encode($query));
     }
 }
