@@ -115,7 +115,7 @@
 - [x] Filter by name or tile either movies or people in the Index
 - [ ] Create a button component
 - [x] Override tailwind typography with Swstarter Zeplin mockup values
-- [] Override tailwind colors with Swstarter Zeplin mockup values
+- [ ] Override tailwind colors with Swstarter Zeplin mockup values
 - [ ] Migrate to Typescript
 - [ ] A flash message component to display error messages
 
