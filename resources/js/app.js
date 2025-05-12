@@ -1,3 +1,4 @@
+import '@fontsource/montserrat';
 import '../css/app.css';
 import './bootstrap';
 

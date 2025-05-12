@@ -7,7 +7,7 @@ import { Link } from '@inertiajs/vue3';
         <div class="min-h-screen bg-gray-100">
             <nav class="border-b border-gray-100 bg-white">
                 <!-- Primary Navigation Menu -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 items-center justify-center">
                         <div class="flex shrink-0">
                             <Link
