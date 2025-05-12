@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Http;
 
 class SWAAPIClient
 {
-    private const BASE_URL = 'https://swapi.tech/api';
+    private const BASE_URL = 'https://www.swapi.tech/api';
 
     public const CACHE_PREFIX = 'swapi_cache:';
 
@@ -22,7 +22,7 @@ class SWAAPIClient
 
     public function __construct()
     {
-        $this->httpClient = Http::withoutVerifying()->acceptJson();
+        $this->httpClient = Http::withoutVerifying();
     }
 
     /**
@@ -30,15 +30,13 @@ class SWAAPIClient
      */
     private function makeRequest(string $method, string $endpoint, array $query = []): array
     {
-        $cacheKey = $this->getRequestCacheSignatureKey($method, $endpoint, $query);
+        $cacheKey = $this->getRequestCacheSignatureKey($method, self::BASE_URL . $endpoint, $query);
         // Check if the response is remembered in the cache
         $response = Cache::remember($cacheKey, now()->addDay(), function () use ($method, $endpoint, $query) {
-            return $this->httpClient->{$method}(self::BASE_URL.$endpoint, $query);
+            return $this->httpClient->{$method}(self::BASE_URL . $endpoint, $query)->json();
         });
 
-        $response = $this->httpClient->{$method}(self::BASE_URL.$endpoint, $query);
-
-        return $response->json() ?? [];
+        return $response ?? [];
     }
 
     /**
@@ -161,27 +159,48 @@ class SWAAPIClient
      */
     private function getRawResourcesByUrls(array $urls): array
     {
+        $results = []; // Array to store the results
+        $urlsToFetch = []; //urls that need to be fetched
+        $urlCacheKeyMap = []; // Map to store the cache keys for each URL
 
-        $httpResponses = Http::pool(function (Pool $pool) use ($urls) {
-            $pendingPools = [];
-            foreach ($urls as $url) {
-                if (filter_var($url, FILTER_VALIDATE_URL)) {
-                    $pendingPools[] = $pool->withoutVerifying()->acceptJson()->get($url);
-                }
+        foreach ($urls as $url) {
+
+            $cacheKey = $this->getRequestCacheSignatureKey('get', $url, []);
+            $cachedResponse = Cache::get($cacheKey);
+
+            if ($cachedResponse !== null) {
+                $results[] = $cachedResponse['result'];
+                continue;
             }
 
-            return $pendingPools;
+            $urlsToFetch[] = $url;
+            $urlCacheKeyMap[$url] = $cacheKey;
+        }
+
+
+        $httpResponses = Http::pool(function (Pool $pool) use ($urlsToFetch) {
+            $pendingPoolRequests = [];
+            foreach ($urlsToFetch as $urlToFetchFromPool) {
+                $pendingPoolRequests[] = $pool->as($urlToFetchFromPool)->withoutVerifying()->get($urlToFetchFromPool);
+            }
+
+            return $pendingPoolRequests;
         });
 
-        $results = [];
-        foreach ($httpResponses as $response) {
-            if ($response->successful()) {
+        foreach ($urlsToFetch as $fetchedUrl) {
+
+            $response = $httpResponses[$fetchedUrl];
+
+            if ($response && $response->successful()) {
                 $responseData = $response->json();
-                if (isset($responseData['result'])) {
-                    $results[] = $responseData['result'];
-                }
+                $results[] = $responseData['result'];
+                // Cache the full responseData for future use, consistent with makeRequest.
+                // Retrieve the cacheKey stored earlier for this URL.
+                $cacheKeyForStorage = $urlCacheKeyMap[$fetchedUrl];
+                Cache::put($cacheKeyForStorage, $responseData, now()->addDay());
             }
         }
+
 
         return $results;
     }
@@ -220,12 +239,9 @@ class SWAAPIClient
 
     private function getRequestCacheSignatureKey(string $method, string $endpoint, array $query = []): string
     {
-        if (empty($query)) {
-            return md5($method.$endpoint);
-        }
         // Sort the query parameters to ensure consistent ordering
         ksort($query);
 
-        return self::CACHE_PREFIX.md5($method.$endpoint.json_encode($query));
+        return self::CACHE_PREFIX . ($method . $endpoint . json_encode($query));
     }
 }

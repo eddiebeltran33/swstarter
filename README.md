@@ -42,9 +42,9 @@
     ./vendor/bin/sail artisan key:generate
     ```
 
-8. Migrate the database (Do this in a new terminal)
+8. Migrate the app and testing databases (Do this in a new terminal)
     ```bash
-    ./vendor/bin/sail artisan migrate
+    ./vendor/bin/sail artisan migrate:fresh && ./vendor/bin/sail artisan migrate:fresh --database testing
     ```
 9. Run Laravel Horizon (Do this in a new terminal)
     ```bash
@@ -79,7 +79,7 @@
 
 ## Architecture
 
-- [ ] Use a cache layer to avoid hitting the SWAPI too often **(Non negotiable)**
+- [x] Use a cache layer to avoid hitting the SWAPI too often **(Non negotiable)**
 - [x] Use a queue to process the "traces" (metrics) in the background
 - [ ] Backoff strategy for the SWAPI in case of rate limiting
 - [ ] Use the same rate limiting policy as the SWAPI, once we have a cache layer use a more generous policy
@@ -122,6 +122,7 @@
 - [ ] Resource id must be sanitized before being stored in the database
 - [ ] The search term in both people and movie endpoints should probably be normalized for easier grouping in
       aggregation process (trim spaces, lowercase, remove special characters, etc)
+- [ ] Not considering errors in the SWAPI responses
 
 ## Poetic Licenses (stuff that wouldn't cut it in a real project)
 
