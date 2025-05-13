@@ -2,6 +2,7 @@
 
 use App\Jobs\CreateMetrics;
 
+
 it('can list movie 1 - A New Hope', function () {
     // enable middleware
     $this->withMiddleware(CreateMetrics::class);
@@ -10,5 +11,9 @@ it('can list movie 1 - A New Hope', function () {
     $response->assertStatus(200);
     $response->assertSee('A New Hope');
 
-    // dump(Metric::all());
+    $this->assertDatabaseHas('request_stats', [
+        'url' => route('movies.show', 1),
+        'http_request_method' => 'GET',
+        'http_status_code' => 200,
+    ]);
 });
